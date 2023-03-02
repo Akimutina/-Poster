@@ -1,45 +1,50 @@
 package ru.netology.poster;
+
 public class MovieManager {
 
-    private  String[] movies = new String[0];
+    private MoviesRepository repo;
     private int limit;
 
-    public MovieManager() {
+    public MovieManager(MoviesRepository repo) {
+        this.repo = repo;
         this.limit = 10;
     }
 
-    public MovieManager(int limit) {
+    public MovieManager(MoviesRepository repo, int limit) {
+        this.repo = repo;
         this.limit = limit;
     }
 
-// Добавление нового фильма
-    public void add(String movie) {
-        String[] tmp = new String[movies.length + 1];
-        for (int i = 0; i < movies.length; i++) {
-            tmp[i] = movies[i];
-        }
-        tmp[tmp.length - 1] = movie;
-        movies = tmp;
+    // Добавление нового фильма
+    public void add(PurchaseItem item) {
+        repo.save(item);
     }
 
-// Вывод всех фильмов в порядке добавления
-    public String[] findAll() {
-        return movies;
+    //Удаляет объект по идентификатору
+    public void removeById(int id) {
+        repo.removeById(id);
     }
 
-// Вывод максимального лимита* последних добавленных фильмов в обратном от добавления порядке
-    public String[] findLast() {
+    // Вывод всех фильмов в порядке добавления
+    public void findAll() {
+        repo.findAll();
+    }
+
+    // Вывод максимального лимита* последних добавленных фильмов в обратном от добавления порядке
+    public PurchaseItem[] getItems() {
+
+        PurchaseItem[] all = repo.findAll();
         int resultLength;
-        if (movies.length < limit) {
-            resultLength = movies.length;
+        if (all.length < limit) {
+            resultLength = all.length;
         } else {
             resultLength = limit;
         }
 
-    String[] tmp = new String[resultLength];
-        for (int i = 0; i < tmp.length; i++) {
-            tmp[i] = movies[movies.length - 1 - i];
+        PurchaseItem[] reversed = new PurchaseItem[resultLength];
+        for (int i = 0; i < reversed.length; i++) {
+            reversed[i] = all[all.length - 1 - i];
         }
-        return tmp;
+        return reversed;
     }
 }
